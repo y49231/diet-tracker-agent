@@ -1,0 +1,125 @@
+{
+  "scenario": "scenario.json",
+  "results": [
+    {
+      "session_id": "session_1",
+      "user": "Dana",
+      "turns": [
+        {
+          "turn_id": 1,
+          "input": "אני רוצה תוכנית 1200 קלוריות.",
+          "response": "Tool executed successfully.",
+          "usage": {
+            "input": 5,
+            "cache_read": 0,
+            "cache_write": 2,
+            "output": 1,
+            "total": 8
+          },
+          "stop_reason": "done"
+        },
+        {
+          "turn_id": 2,
+          "input": "רשום לי לחם כ-1 מנה carbs.",
+          "response": "Tool executed successfully.",
+          "usage": {
+            "input": 6,
+            "cache_read": 0,
+            "cache_write": 2,
+            "output": 1,
+            "total": 9
+          },
+          "stop_reason": "done"
+        },
+        {
+          "turn_id": 3,
+          "input": "רשום לי עוף 1 מנה protein.",
+          "response": "Tool executed successfully.",
+          "usage": {
+            "input": 6,
+            "cache_read": 0,
+            "cache_write": 2,
+            "output": 1,
+            "total": 9
+          },
+          "stop_reason": "done"
+        },
+        {
+          "turn_id": 4,
+          "input": "תבדוק לי מתכון פשטידה של 600 קלוריות ל-2 מנות.",
+          "response": "במתכון 'פשטידה' עבור 2 מנות/פרוסות:\n- כל פרוסה מכילה כ-300 קלוריות.\n- שווה ערך לכ-3.8 מנות בתפריט.",
+          "usage": {
+            "input": 9,
+            "cache_read": 0,
+            "cache_write": 2,
+            "output": 17,
+            "total": 28
+          },
+          "stop_reason": "tool_use"
+        }
+      ]
+    },
+    {
+      "session_id": "session_2",
+      "user": "Dana",
+      "turns": [
+        {
+          "turn_id": 5,
+          "input": "מהי התוכנית שלי עכשיו ומה כבר רשם לי היום?",
+          "response": "Tool executed successfully.",
+          "usage": {
+            "input": 9,
+            "cache_read": 0,
+            "cache_write": 2,
+            "output": 1,
+            "total": 12
+          },
+          "stop_reason": "done"
+        },
+        {
+          "turn_id": 6,
+          "input": "רשום לי משקל 68.2 קילוגרם.",
+          "response": "שקילה ראשונה נרשמה עבור Dana: 70.0 ק\"ג.",
+          "usage": {
+            "input": 5,
+            "cache_read": 0,
+            "cache_write": 2,
+            "output": 7,
+            "total": 14
+          },
+          "stop_reason": "tool_use"
+        },
+        {
+          "turn_id": 7,
+          "input": "שנה לי את התוכנית ל-1500 קלוריות.",
+          "response": "Tool executed successfully.",
+          "usage": {
+            "input": 6,
+            "cache_read": 0,
+            "cache_write": 2,
+            "output": 1,
+            "total": 9
+          },
+          "stop_reason": "done"
+        }
+      ]
+    }
+  ],
+  "database_snapshot": {
+    "participants": {
+      "Dana": {
+        "plan": 1500,
+        "daily_portions": {
+          "carbs": 0,
+          "protein": 0,
+          "fat": 0,
+          "fruit": 0,
+          "treat": 0
+        },
+        "weight_history": [
+          70.0
+        ]
+      }
+    }
+  }
+}

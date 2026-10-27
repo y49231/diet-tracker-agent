@@ -1,0 +1,17 @@
+{
+    "participants": {
+        "Dana": {
+            "plan": 1500,
+            "daily_portions": {
+                "carbs": 0,
+                "protein": 0,
+                "fat": 0,
+                "fruit": 0,
+                "treat": 0
+            },
+            "weight_history": [
+                68.2
+            ]
+        }
+    }
+}

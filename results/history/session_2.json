@@ -1,0 +1,103 @@
+[
+  {
+    "session_id": "session_2",
+    "user": "Dana",
+    "input": "מהי התוכנית שלי עכשיו ומה כבר רשם לי היום?",
+    "context": {
+      "user": "Dana",
+      "plan": 1500,
+      "preferences": {},
+      "recent_events": [],
+      "memory_summary": "user profile exists and meal tracking is active"
+    },
+    "tool": null,
+    "tool_result": null
+  },
+  {
+    "session_id": "session_2",
+    "user": "Dana",
+    "input": "רשום לי משקל 68.2 קילוגרם.",
+    "context": {
+      "user": "Dana",
+      "plan": 1500,
+      "preferences": {},
+      "recent_events": [
+        {
+          "session_id": "session_2",
+          "user": "Dana",
+          "input": "מהי התוכנית שלי עכשיו ומה כבר רשם לי היום?",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [],
+            "memory_summary": "user profile exists and meal tracking is active"
+          },
+          "tool": null,
+          "tool_result": null
+        }
+      ],
+      "memory_summary": "user profile exists and meal tracking is active"
+    },
+    "tool": "log_weight",
+    "tool_result": "שקילה ראשונה נרשמה עבור Dana: 70.0 ק\"ג."
+  },
+  {
+    "session_id": "session_2",
+    "user": "Dana",
+    "input": "שנה לי את התוכנית ל-1500 קלוריות.",
+    "context": {
+      "user": "Dana",
+      "plan": 1500,
+      "preferences": {},
+      "recent_events": [
+        {
+          "session_id": "session_2",
+          "user": "Dana",
+          "input": "מהי התוכנית שלי עכשיו ומה כבר רשם לי היום?",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [],
+            "memory_summary": "user profile exists and meal tracking is active"
+          },
+          "tool": null,
+          "tool_result": null
+        },
+        {
+          "session_id": "session_2",
+          "user": "Dana",
+          "input": "רשום לי משקל 68.2 קילוגרם.",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [
+              {
+                "session_id": "session_2",
+                "user": "Dana",
+                "input": "מהי התוכנית שלי עכשיו ומה כבר רשם לי היום?",
+                "context": {
+                  "user": "Dana",
+                  "plan": 1500,
+                  "preferences": {},
+                  "recent_events": [],
+                  "memory_summary": "user profile exists and meal tracking is active"
+                },
+                "tool": null,
+                "tool_result": null
+              }
+            ],
+            "memory_summary": "user profile exists and meal tracking is active"
+          },
+          "tool": "log_weight",
+          "tool_result": "שקילה ראשונה נרשמה עבור Dana: 70.0 ק\"ג."
+        }
+      ],
+      "memory_summary": "user profile exists and meal tracking is active"
+    },
+    "tool": null,
+    "tool_result": null
+  }
+]

@@ -1,0 +1,219 @@
+[
+  {
+    "session_id": "session_1",
+    "user": "Dana",
+    "input": "אני רוצה תוכנית 1200 קלוריות.",
+    "context": {
+      "user": "Dana",
+      "plan": 1500,
+      "preferences": {},
+      "recent_events": [],
+      "memory_summary": "no_saved_summary"
+    },
+    "tool": null,
+    "tool_result": null
+  },
+  {
+    "session_id": "session_1",
+    "user": "Dana",
+    "input": "רשום לי לחם כ-1 מנה carbs.",
+    "context": {
+      "user": "Dana",
+      "plan": 1500,
+      "preferences": {},
+      "recent_events": [
+        {
+          "session_id": "session_1",
+          "user": "Dana",
+          "input": "אני רוצה תוכנית 1200 קלוריות.",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [],
+            "memory_summary": "no_saved_summary"
+          },
+          "tool": null,
+          "tool_result": null
+        }
+      ],
+      "memory_summary": "user profile exists and meal tracking is active"
+    },
+    "tool": null,
+    "tool_result": null
+  },
+  {
+    "session_id": "session_1",
+    "user": "Dana",
+    "input": "רשום לי עוף 1 מנה protein.",
+    "context": {
+      "user": "Dana",
+      "plan": 1500,
+      "preferences": {},
+      "recent_events": [
+        {
+          "session_id": "session_1",
+          "user": "Dana",
+          "input": "אני רוצה תוכנית 1200 קלוריות.",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [],
+            "memory_summary": "no_saved_summary"
+          },
+          "tool": null,
+          "tool_result": null
+        },
+        {
+          "session_id": "session_1",
+          "user": "Dana",
+          "input": "רשום לי לחם כ-1 מנה carbs.",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [
+              {
+                "session_id": "session_1",
+                "user": "Dana",
+                "input": "אני רוצה תוכנית 1200 קלוריות.",
+                "context": {
+                  "user": "Dana",
+                  "plan": 1500,
+                  "preferences": {},
+                  "recent_events": [],
+                  "memory_summary": "no_saved_summary"
+                },
+                "tool": null,
+                "tool_result": null
+              }
+            ],
+            "memory_summary": "user profile exists and meal tracking is active"
+          },
+          "tool": null,
+          "tool_result": null
+        }
+      ],
+      "memory_summary": "user profile exists and meal tracking is active"
+    },
+    "tool": null,
+    "tool_result": null
+  },
+  {
+    "session_id": "session_1",
+    "user": "Dana",
+    "input": "תבדוק לי מתכון פשטידה של 600 קלוריות ל-2 מנות.",
+    "context": {
+      "user": "Dana",
+      "plan": 1500,
+      "preferences": {},
+      "recent_events": [
+        {
+          "session_id": "session_1",
+          "user": "Dana",
+          "input": "אני רוצה תוכנית 1200 קלוריות.",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [],
+            "memory_summary": "no_saved_summary"
+          },
+          "tool": null,
+          "tool_result": null
+        },
+        {
+          "session_id": "session_1",
+          "user": "Dana",
+          "input": "רשום לי לחם כ-1 מנה carbs.",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [
+              {
+                "session_id": "session_1",
+                "user": "Dana",
+                "input": "אני רוצה תוכנית 1200 קלוריות.",
+                "context": {
+                  "user": "Dana",
+                  "plan": 1500,
+                  "preferences": {},
+                  "recent_events": [],
+                  "memory_summary": "no_saved_summary"
+                },
+                "tool": null,
+                "tool_result": null
+              }
+            ],
+            "memory_summary": "user profile exists and meal tracking is active"
+          },
+          "tool": null,
+          "tool_result": null
+        },
+        {
+          "session_id": "session_1",
+          "user": "Dana",
+          "input": "רשום לי עוף 1 מנה protein.",
+          "context": {
+            "user": "Dana",
+            "plan": 1500,
+            "preferences": {},
+            "recent_events": [
+              {
+                "session_id": "session_1",
+                "user": "Dana",
+                "input": "אני רוצה תוכנית 1200 קלוריות.",
+                "context": {
+                  "user": "Dana",
+                  "plan": 1500,
+                  "preferences": {},
+                  "recent_events": [],
+                  "memory_summary": "no_saved_summary"
+                },
+                "tool": null,
+                "tool_result": null
+              },
+              {
+                "session_id": "session_1",
+                "user": "Dana",
+                "input": "רשום לי לחם כ-1 מנה carbs.",
+                "context": {
+                  "user": "Dana",
+                  "plan": 1500,
+                  "preferences": {},
+                  "recent_events": [
+                    {
+                      "session_id": "session_1",
+                      "user": "Dana",
+                      "input": "אני רוצה תוכנית 1200 קלוריות.",
+                      "context": {
+                        "user": "Dana",
+                        "plan": 1500,
+                        "preferences": {},
+                        "recent_events": [],
+                        "memory_summary": "no_saved_summary"
+                      },
+                      "tool": null,
+                      "tool_result": null
+                    }
+                  ],
+                  "memory_summary": "user profile exists and meal tracking is active"
+                },
+                "tool": null,
+                "tool_result": null
+              }
+            ],
+            "memory_summary": "user profile exists and meal tracking is active"
+          },
+          "tool": null,
+          "tool_result": null
+        }
+      ],
+      "memory_summary": "user profile exists and meal tracking is active"
+    },
+    "tool": "check_recipe",
+    "tool_result": "במתכון 'פשטידה' עבור 2 מנות/פרוסות:\n- כל פרוסה מכילה כ-300 קלוריות.\n- שווה ערך לכ-3.8 מנות בתפריט."
+  }
+]

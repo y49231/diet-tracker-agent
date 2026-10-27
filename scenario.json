@@ -1,0 +1,73 @@
+{
+  "sessions": [
+    {
+      "session_id": "session_1",
+      "user": "Dana",
+      "turns": [
+        {
+          "id": 1,
+          "input": "אני רוצה תוכנית 1200 קלוריות.",
+          "expected_tools": ["set_plan"],
+          "expected_state": {
+            "plan": 1200
+          }
+        },
+        {
+          "id": 2,
+          "input": "רשום לי לחם כ-1 מנה carbs.",
+          "expected_tools": ["log_food"],
+          "expected_state": {
+            "daily_portions.carbs": 1
+          }
+        },
+        {
+          "id": 3,
+          "input": "רשום לי עוף 1 מנה protein.",
+          "expected_tools": ["log_food"],
+          "expected_state": {
+            "daily_portions.protein": 1
+          }
+        },
+        {
+          "id": 4,
+          "input": "תבדוק לי מתכון פשטידה של 600 קלוריות ל-2 מנות.",
+          "expected_tools": ["check_recipe"],
+          "expected_state": {
+            "recipe_check": true
+          }
+        }
+      ]
+    },
+    {
+      "session_id": "session_2",
+      "user": "Dana",
+      "turns": [
+        {
+          "id": 5,
+          "input": "מהי התוכנית שלי עכשיו ומה כבר רשם לי היום?",
+          "expected_tools": ["load_memory"],
+          "expected_state": {
+            "plan": 1200,
+            "memory_loaded": true
+          }
+        },
+        {
+          "id": 6,
+          "input": "רשום לי משקל 68.2 קילוגרם.",
+          "expected_tools": ["log_weight"],
+          "expected_state": {
+            "weight_history_length": 1
+          }
+        },
+        {
+          "id": 7,
+          "input": "שנה לי את התוכנית ל-1500 קלוריות.",
+          "expected_tools": ["set_plan"],
+          "expected_state": {
+            "plan": 1500
+          }
+        }
+      ]
+    }
+  ]
+}

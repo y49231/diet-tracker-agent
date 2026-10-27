@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מערכת מעקב תזונה אישית ומשפחתית</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Assistant', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); }
+        .gradient-bg { background: linear-gradient(135deg, #6366f1 0%, #ec4899 50%, #f59e0b 100%); }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- כותרת ראשית -->
+    <header class="gradient-bg text-white shadow-2xl py-6 px-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-4xl animate-bounce">🥗</span>
+                <h1 class="text-2xl md:text-3xl font-extrabold tracking-wide drop-shadow-md">מעקב תזונה ודיאטה אישית ומשפחתית</h1>
+            </div>
+            <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md p-2.5 rounded-2xl border border-white/20 shadow-inner">
+                <label for="userSelect" class="font-semibold text-white">משתתף פעיל:</label>
+                <select id="userSelect" onchange="switchUser()" class="bg-slate-800 border border-slate-600 rounded-xl px-3 py-1.5 text-white font-bold focus:outline-none focus:ring-2 focus:ring-pink-400">
+                    <option value="ישראל">ישראל</option>
+                    <option value="רבקה">רבקה</option>
+                </select>
+                <button onclick="addUser()" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-3.5 py-1.5 rounded-xl text-sm transition shadow-lg">✨ הוסף</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- טיפים מתעדכנים -->
+    <section class="bg-slate-800/90 border-b border-slate-700 py-3 px-6 text-center text-pink-300 font-semibold shadow-inner transition-all duration-700" id="tipBox">
+        💡 טיפ יומי: שתייה מרובה של מים מסייעת לתהליך חילוף החומרים ולשמירה על תחושת שובע.
+    </section>
+
+    <!-- תוכן ראשי -->
+    <main class="max-w-6xl mx-auto flex-1 w-full p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+
+        <!-- עמודה שמאלית/מרכזית: ניהול תוכנית ומנות יומיות -->
+        <div class="md:col-span-2 space-y-6">
+
+            <!-- כרטיס הגדרת מסלול -->
+            <div class="glass-card text-slate-800 p-6 rounded-3xl shadow-xl border border-white/40 hover:shadow-2xl transition">
+                <h2 class="text-xl font-extrabold text-indigo-900 mb-4 flex items-center gap-2"><span>🎯</span> הגדרת מסלול תזונה</h2>
+                <div class="flex flex-wrap items-center gap-4">
+                    <button onclick="setPlan(1500)" id="btn1500" class="px-5 py-3 rounded-2xl font-bold border transition flex-1 text-center shadow-md">מסלול 1500 קלוריות</button>
+                    <button onclick="setPlan(1200)" id="btn1200" class="px-5 py-3 rounded-2xl font-bold border transition flex-1 text-center shadow-md">מסלול 1200 קלוריות</button>
+                </div>
+                <p id="planDetails" class="mt-4 text-sm font-semibold text-indigo-950 bg-indigo-50/80 p-3.5 rounded-2xl border border-indigo-100"></p>
+            </div>
+
+            <!-- מעקב מנות יומי -->
+            <div class="glass-card text-slate-800 p-6 rounded-3xl shadow-xl border border-white/40 hover:shadow-2xl transition">
+                <h2 class="text-xl font-extrabold text-indigo-900 mb-4 flex items-center gap-2"><span>📊</span> מעקב מנות יומי</h2>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6" id="portionsGrid">
+                    <!-- ייוצר דינמית ב-JS -->
+                </div>
+
+                <div class="mb-4">
+                    <div class="text-sm font-bold text-indigo-800 mb-2">שם מאכל:</div>
+                    <input type="text" id="itemName" placeholder="למשל: עוף, לחם פרוסה, תפוח, סוכר" class="border border-slate-300 rounded-xl px-4 py-2.5 flex-1 w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                </div>
+
+                <div class="border-t pt-4 flex flex-col sm:flex-row gap-3 items-center bg-slate-100/80 p-4 rounded-2xl border border-slate-200">
+                    <label class="font-bold text-slate-700">כמות:</label>
+                    <input type="number" id="itemCount" value="1" step="0.5" min="0.5" class="border border-slate-300 rounded-xl px-4 py-2.5 w-24 text-center font-bold bg-white">
+                    <button onclick="logFood()" class="bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-700 hover:to-pink-700 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-lg w-full sm:w-auto">רשום מנה</button>
+                </div>
+
+                <div id="portionSummary" class="mt-4 text-sm font-semibold text-indigo-800 bg-indigo-50 rounded-xl p-3 border border-indigo-100"></div>
+            </div>
+
+            <!-- מחשבון מתכונים -->
+            <div class="glass-card text-slate-800 p-6 rounded-3xl shadow-xl border border-white/40 hover:shadow-2xl transition">
+                <h2 class="text-xl font-extrabold text-indigo-900 mb-4 flex items-center gap-2"><span>🍰</span> מחשבון מתכונים מורכבים</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+                    <input type="text" id="recipeName" placeholder="שם המתכון (למשל: עוגה)" class="border border-slate-300 rounded-xl px-4 py-2.5 bg-white">
+                    <input type="number" id="recipeCalories" placeholder="סך הקלוריות במתכון" class="border border-slate-300 rounded-xl px-4 py-2.5 bg-white">
+                    <input type="number" id="recipeServings" placeholder="מספר פרוסות / מנות" class="border border-slate-300 rounded-xl px-4 py-2.5 bg-white">
+                </div>
+                <button onclick="calculateRecipe()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-6 py-2.5 rounded-xl transition shadow-md">חשב ערך למנה</button>
+                <div id="recipeResult" class="mt-4 font-bold text-pink-600 text-base"></div>
+            </div>
+
+        </div>
+
+        <!-- עמודה ימנית: מעקב משקל -->
+        <div class="space-y-6">
+            <div class="glass-card text-slate-800 p-6 rounded-3xl shadow-xl border border-white/40 hover:shadow-2xl transition flex flex-col h-full">
+                <h2 class="text-xl font-extrabold text-indigo-900 mb-4 flex items-center gap-2"><span>⚖️</span> מעקב שקילה שבועי</h2>
+                <div class="flex gap-2 mb-4">
+                    <input type="number" id="weightInput" step="0.1" placeholder="משקל נוכחי (ק״ג)" class="border border-slate-300 rounded-xl px-4 py-2 flex-1 bg-white font-semibold">
+                    <button onclick="logWeight()" class="bg-pink-600 hover:bg-pink-500 text-white font-bold px-5 py-2 rounded-xl transition shadow-md">שמור</button>
+                </div>
+                <div class="h-72 relative flex-1">
+                    <canvas id="weightChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-800 text-slate-400 text-center py-4 mt-auto text-sm font-medium border-t border-slate-700">
+        מערכת ניהול תזונה אישית ומשפחתית &copy; כל הזכויות שמורות
+    </footer>
+
+    <script>
+        let db = JSON.parse(localStorage.getItem('diet_db')) || {
+            "ישראל": { plan: 1500, portions: { carbs: {max:6, current:0}, protein: {max:5, current:0}, fat: {max:3, current:0}, fruit: {max:3, current:0}, treat: {max:1, current:0} }, weights: [81.0, 80.5] },
+            "רבקה": { plan: 1200, portions: { carbs: {max:4, current:0}, protein: {max:4, current:0}, fat: {max:3, current:0}, fruit: {max:3, current:0}, treat: {max:1, current:0} }, weights: [69.0, 68.2] }
+        };
+
+        let currentUser = "ישראל";
+        let weightChartInstance = null;
+
+        const foodCatalog = {
+            carbs: [
+                { name: 'לחם פרוסה', unit: 'פרוסה', calories: 80, portionValue: 1 },
+                { name: 'אורז מבושל', unit: 'כוס', calories: 200, portionValue: 1 },
+                { name: 'תפוח גדול', unit: 'יחידה', calories: 95, portionValue: 1 },
+                { name: 'סוכר', unit: 'כוס', calories: 400, portionValue: 4 },
+                { name: 'לחמניה', unit: 'יחידה', calories: 130, portionValue: 1.5 },
+                { name: 'לחם', unit: 'פרוסה', calories: 80, portionValue: 1 },
+                { name: 'אורז', unit: 'כוס', calories: 200, portionValue: 1 },
+                { name: 'פסטה', unit: 'כוס', calories: 200, portionValue: 1 },
+                { name: 'פיתה', unit: 'יחידה', calories: 140, portionValue: 1.5 },
+                { name: 'בורגול', unit: 'כוס', calories: 170, portionValue: 1 },
+                { name: 'קוסקוס', unit: 'כוס', calories: 180, portionValue: 1 },
+                { name: 'שיבולת שועל', unit: 'כף', calories: 25, portionValue: 0.25 },
+                { name: 'אטריות', unit: 'כוס', calories: 220, portionValue: 1 },
+                { name: 'תפוח אדמה', unit: 'יחידה', calories: 130, portionValue: 1 },
+                { name: 'בייגל', unit: 'יחידה', calories: 220, portionValue: 1.5 },
+                { name: 'כריך', unit: 'יחידה', calories: 300, portionValue: 1.5 },
+                { name: 'תירס', unit: 'כוס', calories: 140, portionValue: 1 },
+                { name: 'פנכה', unit: 'כוס', calories: 120, portionValue: 1 }
+            ],
+            protein: [
+                { name: 'עוף', unit: 'מנת בינונית', calories: 180, portionValue: 1 },
+                { name: 'יוגורט', unit: 'כוס', calories: 150, portionValue: 1 },
+                { name: 'טונה', unit: 'פחית', calories: 160, portionValue: 1 },
+                { name: 'ביצה', unit: 'יחידה', calories: 70, portionValue: 1 },
+                { name: 'גבינה', unit: 'פרוסה', calories: 90, portionValue: 1 },
+                { name: 'סלמון', unit: 'מנת בינונית', calories: 210, portionValue: 1 },
+                { name: 'דג', unit: 'מנת בינונית', calories: 180, portionValue: 1 },
+                { name: 'בשר', unit: 'מנת בינונית', calories: 220, portionValue: 1 },
+                { name: 'טופו', unit: 'כוס', calories: 140, portionValue: 1 },
+                { name: 'חלב', unit: 'כוס', calories: 120, portionValue: 1 },
+                { name: 'קוטג', unit: 'כוס', calories: 110, portionValue: 1 },
+                { name: 'חזה עוף', unit: 'מנת בינונית', calories: 170, portionValue: 1 },
+                { name: 'קציצה', unit: 'יחידה', calories: 150, portionValue: 1 },
+                { name: 'חביתה', unit: 'יחידה', calories: 110, portionValue: 1 },
+                { name: 'חומוס', unit: 'כף', calories: 35, portionValue: 0.5 },
+                { name: 'פלאפל', unit: 'יחידה', calories: 170, portionValue: 1 },
+                { name: 'מרק', unit: 'כוס', calories: 120, portionValue: 1 },
+                { name: 'עדשים', unit: 'כוס', calories: 230, portionValue: 1 }
+            ],
+            fat: [
+                { name: 'אבוקדו', unit: 'יחידה', calories: 160, portionValue: 1 },
+                { name: 'שמן זית', unit: 'כף', calories: 45, portionValue: 1 },
+                { name: 'אגוזים', unit: 'כפית', calories: 30, portionValue: 0.5 },
+                { name: 'בוטנים', unit: 'כפית', calories: 30, portionValue: 0.5 },
+                { name: 'שמן', unit: 'כף', calories: 45, portionValue: 1 },
+                { name: 'שקדים', unit: 'כפית', calories: 45, portionValue: 0.5 },
+                { name: 'חמאה', unit: 'כפית', calories: 35, portionValue: 0.5 },
+                { name: 'טחינה', unit: 'כף', calories: 90, portionValue: 1 },
+                { name: 'שומשום', unit: 'כף', calories: 50, portionValue: 1 }
+            ],
+            fruit: [
+                { name: 'תפוח', unit: 'יחידה', calories: 95, portionValue: 1 },
+                { name: 'בננה', unit: 'יחידה', calories: 105, portionValue: 1 },
+                { name: 'אשכולית', unit: 'יחידה', calories: 70, portionValue: 1 },
+                { name: 'תפוז', unit: 'יחידה', calories: 62, portionValue: 1 },
+                { name: 'אבטיח', unit: 'כוס', calories: 50, portionValue: 1 },
+                { name: 'אננס', unit: 'כוס', calories: 60, portionValue: 1 },
+                { name: 'קיווי', unit: 'יחידה', calories: 42, portionValue: 1 },
+                { name: 'אפרסק', unit: 'יחידה', calories: 57, portionValue: 1 },
+                { name: 'תות', unit: 'כוס', calories: 50, portionValue: 1 },
+                { name: 'אשכול', unit: 'יחידה', calories: 80, portionValue: 1 },
+                { name: 'מלון', unit: 'כוס', calories: 54, portionValue: 1 },
+                { name: 'אפרסמון', unit: 'יחידה', calories: 70, portionValue: 1 },
+                { name: 'עגבנייה', unit: 'יחידה', calories: 20, portionValue: 1 },
+                { name: 'מלפפון', unit: 'יחידה', calories: 15, portionValue: 1 },
+                { name: 'גזר', unit: 'יחידה', calories: 35, portionValue: 1 }
+            ],
+            treat: [
+                { name: 'עוגייה', unit: 'יחידה', calories: 150, portionValue: 1 },
+                { name: 'עוגיה', unit: 'יחידה', calories: 150, portionValue: 1 },
+                { name: 'מאפין', unit: 'יחידה', calories: 180, portionValue: 1 },
+                { name: 'גלידה', unit: 'כפית', calories: 50, portionValue: 0.5 },
+                { name: 'שוקולד', unit: 'ריבוע', calories: 120, portionValue: 1 },
+                { name: 'סוכר', unit: 'כפית', calories: 20, portionValue: 0.25 },
+                { name: 'סופגניה', unit: 'יחידה', calories: 240, portionValue: 1 },
+                { name: 'עוגת גבינה', unit: 'פרוסה', calories: 220, portionValue: 1 }
+            ]
+        };
+
+        function detectFoodMeta(input) {
+            const text = (input || '').trim();
+            const normalized = text.toLowerCase();
+            if (!normalized) return null;
+
+            const aliases = [
+                ['בוטנים', 'fat', { name: 'בוטנים', unit: 'כפית', calories: 30, portionValue: 0.5 }],
+                ['אגוזים', 'fat', { name: 'אגוזים', unit: 'כפית', calories: 30, portionValue: 0.5 }],
+                ['שקדים', 'fat', { name: 'שקדים', unit: 'כפית', calories: 45, portionValue: 0.5 }],
+                ['חמאה', 'fat', { name: 'חמאה', unit: 'כפית', calories: 35, portionValue: 0.5 }],
+                ['אבוקדו', 'fat', { name: 'אבוקדו', unit: 'יחידה', calories: 160, portionValue: 1 }],
+                ['שמן', 'fat', { name: 'שמן', unit: 'כף', calories: 45, portionValue: 1 }],
+                ['טחינה', 'fat', { name: 'טחינה', unit: 'כף', calories: 90, portionValue: 1 }],
+                ['שוקולד', 'treat', { name: 'שוקולד', unit: 'ריבוע', calories: 120, portionValue: 1 }],
+                ['עוגיה', 'treat', { name: 'עוגיה', unit: 'יחידה', calories: 150, portionValue: 1 }],
+                ['עוגייה', 'treat', { name: 'עוגייה', unit: 'יחידה', calories: 150, portionValue: 1 }],
+                ['מאפין', 'treat', { name: 'מאפין', unit: 'יחידה', calories: 180, portionValue: 1 }],
+                ['גלידה', 'treat', { name: 'גלידה', unit: 'כפית', calories: 50, portionValue: 0.5 }],
+                ['סופגניה', 'treat', { name: 'סופגניה', unit: 'יחידה', calories: 240, portionValue: 1 }],
+                ['עוגת גבינה', 'treat', { name: 'עוגת גבינה', unit: 'פרוסה', calories: 220, portionValue: 1 }],
+                ['לחם', 'carbs', { name: 'לחם', unit: 'פרוסה', calories: 80, portionValue: 1 }],
+                ['לחמניה', 'carbs', { name: 'לחמניה', unit: 'יחידה', calories: 130, portionValue: 1.5 }],
+                ['פיתה', 'carbs', { name: 'פיתה', unit: 'יחידה', calories: 140, portionValue: 1.5 }],
+                ['אורז', 'carbs', { name: 'אורז', unit: 'כוס', calories: 200, portionValue: 1 }],
+                ['פסטה', 'carbs', { name: 'פסטה', unit: 'כוס', calories: 200, portionValue: 1 }],
+                ['קוסקוס', 'carbs', { name: 'קוסקוס', unit: 'כוס', calories: 180, portionValue: 1 }],
+                ['בורגול', 'carbs', { name: 'בורגול', unit: 'כוס', calories: 170, portionValue: 1 }],
+                ['שיבולת שועל', 'carbs', { name: 'שיבולת שועל', unit: 'כף', calories: 25, portionValue: 0.25 }],
+                ['אטריות', 'carbs', { name: 'אטריות', unit: 'כוס', calories: 220, portionValue: 1 }],
+                ['בייגל', 'carbs', { name: 'בייגל', unit: 'יחידה', calories: 220, portionValue: 1.5 }],
+                ['ברוסקטה', 'carbs', { name: 'ברוסקטה', unit: 'פרוסה', calories: 100, portionValue: 1 }],
+                ['כריך', 'carbs', { name: 'כריך', unit: 'יחידה', calories: 300, portionValue: 1.5 }],
+                ['תפוח אדמה', 'carbs', { name: 'תפוח אדמה', unit: 'יחידה', calories: 130, portionValue: 1 }],
+                ['תפוח', 'fruit', { name: 'תפוח', unit: 'יחידה', calories: 95, portionValue: 1 }],
+                ['בננה', 'fruit', { name: 'בננה', unit: 'יחידה', calories: 105, portionValue: 1 }],
+                ['אשכולית', 'fruit', { name: 'אשכולית', unit: 'יחידה', calories: 70, portionValue: 1 }],
+                ['תפוז', 'fruit', { name: 'תפוז', unit: 'יחידה', calories: 62, portionValue: 1 }],
+                ['אבטיח', 'fruit', { name: 'אבטיח', unit: 'כוס', calories: 50, portionValue: 1 }],
+                ['אננס', 'fruit', { name: 'אננס', unit: 'כוס', calories: 60, portionValue: 1 }],
+                ['קיווי', 'fruit', { name: 'קיווי', unit: 'יחידה', calories: 42, portionValue: 1 }],
+                ['אפרסק', 'fruit', { name: 'אפרסק', unit: 'יחידה', calories: 57, portionValue: 1 }],
+                ['תות', 'fruit', { name: 'תות', unit: 'כוס', calories: 50, portionValue: 1 }],
+                ['אשכול', 'fruit', { name: 'אשכול', unit: 'יחידה', calories: 80, portionValue: 1 }],
+                ['מלון', 'fruit', { name: 'מלון', unit: 'כוס', calories: 54, portionValue: 1 }],
+                ['עגבנייה', 'fruit', { name: 'עגבנייה', unit: 'יחידה', calories: 20, portionValue: 1 }],
+                ['מלפפון', 'fruit', { name: 'מלפפון', unit: 'יחידה', calories: 15, portionValue: 1 }],
+                ['גזר', 'fruit', { name: 'גזר', unit: 'יחידה', calories: 35, portionValue: 1 }],
+                ['עוף', 'protein', { name: 'עוף', unit: 'מנת בינונית', calories: 180, portionValue: 1 }],
+                ['ביצה', 'protein', { name: 'ביצה', unit: 'יחידה', calories: 70, portionValue: 1 }],
+                ['טונה', 'protein', { name: 'טונה', unit: 'פחית', calories: 160, portionValue: 1 }],
+                ['יוגורט', 'protein', { name: 'יוגורט', unit: 'כוס', calories: 150, portionValue: 1 }],
+                ['גבינה', 'protein', { name: 'גבינה', unit: 'פרוסה', calories: 90, portionValue: 1 }],
+                ['סלמון', 'protein', { name: 'סלמון', unit: 'מנת בינונית', calories: 210, portionValue: 1 }],
+                ['דג', 'protein', { name: 'דג', unit: 'מנת בינונית', calories: 180, portionValue: 1 }],
+                ['בשר', 'protein', { name: 'בשר', unit: 'מנת בינונית', calories: 220, portionValue: 1 }],
+                ['טופו', 'protein', { name: 'טופו', unit: 'כוס', calories: 140, portionValue: 1 }],
+                ['חלב', 'protein', { name: 'חלב', unit: 'כוס', calories: 120, portionValue: 1 }],
+                ['קוטג', 'protein', { name: 'קוטג', unit: 'כוס', calories: 110, portionValue: 1 }],
+                ['חזה עוף', 'protein', { name: 'חזה עוף', unit: 'מנת בינונית', calories: 170, portionValue: 1 }],
+                ['קציצה', 'protein', { name: 'קציצה', unit: 'יחידה', calories: 150, portionValue: 1 }],
+                ['חביתה', 'protein', { name: 'חביתה', unit: 'יחידה', calories: 110, portionValue: 1 }],
+                ['חומוס', 'protein', { name: 'חומוס', unit: 'כף', calories: 35, portionValue: 0.5 }],
+                ['פלאפל', 'protein', { name: 'פלאפל', unit: 'יחידה', calories: 170, portionValue: 1 }],
+                ['עדשים', 'protein', { name: 'עדשים', unit: 'כוס', calories: 230, portionValue: 1 }],
+                ['מרק', 'protein', { name: 'מרק', unit: 'כוס', calories: 120, portionValue: 1 }],
+                ['סוכר', 'treat', { name: 'סוכר', unit: 'כפית', calories: 20, portionValue: 0.25 }]
+            ];
+
+            for (const [alias, category, item] of aliases) {
+                if (normalized === alias || normalized.includes(alias) || alias.includes(normalized)) {
+                    return { ...item, category };
+                }
+            }
+
+            const keywordRules = [
+                { keywords: ['עוף', 'בשר', 'סלמון', 'טונה', 'דג', 'ביצה', 'יוגורט', 'גבינה', 'חלב', 'קוטג', 'קציצה', 'פלאפל', 'חומוס', 'עדשים'], category: 'protein' },
+                { keywords: ['לחם', 'לחמניה', 'פיתה', 'אורז', 'פסטה', 'קוסקוס', 'תפוח אדמה', 'כיכר', 'בורגול', 'בייגל', 'כריך', 'אטריות'], category: 'carbs' },
+                { keywords: ['מלפפון', 'עגבנייה', 'גזר', 'תפוח', 'בננה', 'אשכולית', 'תות', 'אבטיח', 'אננס', 'מלון', 'תפוז', 'אשכול', 'אפרסק'], category: 'fruit' },
+                { keywords: ['בוטנים', 'אגוזים', 'שקדים', 'חמאה', 'שמן', 'טחינה', 'אבוקדו'], category: 'fat' },
+                { keywords: ['שוקולד', 'עוגייה', 'עוגיה', 'גלידה', 'מאפין', 'סוכר', 'סופגניה'], category: 'treat' }
+            ];
+
+            for (const rule of keywordRules) {
+                for (const keyword of rule.keywords) {
+                    if (normalized === keyword || normalized.includes(keyword) || keyword.includes(normalized)) {
+                        return { ...((rule.category === 'protein' ? { name: keyword, unit: 'יחידה', calories: 120, portionValue: 1 } : rule.category === 'carbs' ? { name: keyword, unit: 'יחידה', calories: 120, portionValue: 1 } : rule.category === 'fruit' ? { name: keyword, unit: 'יחידה', calories: 60, portionValue: 1 } : rule.category === 'fat' ? { name: keyword, unit: 'כפית', calories: 35, portionValue: 0.5 } : { name: keyword, unit: 'יחידה', calories: 120, portionValue: 1 })), category: rule.category };
+                    }
+                }
+            }
+
+            let found = null;
+            Object.keys(foodCatalog).forEach(category => {
+                foodCatalog[category].forEach(item => {
+                    const itemName = item.name.toLowerCase();
+                    if (normalized === itemName || normalized.includes(itemName) || itemName.includes(normalized)) {
+                        found = { ...item, category };
+                    }
+                });
+            });
+            return found;
+        }
+
+        const tips = [
+            "💡 טיפ יומי: הקפדה על אכילת ירקות בכל ארוחה מסייעת לתחושת שובע מתמשכת.",
+            "💡 טיפ יומי: תכנון מוקדם של הארוחות במהלך היום מונע אכילה רגשית או לא מתוכננת.",
+            "💡 טיפ יומי: מומלץ לאכול לאט וללעוס היטב את האוכל לשיפור תהליך העיכול.",
+            "💡 טיפ יומי: אל תוותרו על מנת הפינוק השבועית שלכם – שילוב מבוקר שומר על התמדה לאורך זמן."
+        ];
+
+        let selectedCategory = 'carbs';
+        let selectedFood = null;
+
+        setInterval(() => {
+            const randomTip = tips[Math.floor(Math.random() * tips.length)];
+            const tipBox = document.getElementById('tipBox');
+            tipBox.style.opacity = '0';
+            setTimeout(() => {
+                tipBox.innerText = randomTip;
+                tipBox.style.opacity = '1';
+            }, 300);
+        }, 7000);
+
+        function saveDB() {
+            localStorage.setItem('diet_db', JSON.stringify(db));
+        }
+
+        function switchUser() {
+            currentUser = document.getElementById('userSelect').value;
+            render();
+        }
+
+        async function addUser() {
+            const { value: name } = await Swal.fire({
+                title: 'הוספת משתתף חדש',
+                input: 'text',
+                inputLabel: 'הקלידי שם משתתף:',
+                inputPlaceholder: 'שם מלא...',
+                confirmButtonText: 'הוסף',
+                cancelButtonText: 'ביטול',
+                showCancelButton: true,
+                confirmButtonColor: '#6366f1'
+            });
+
+            if (name && !db[name]) {
+                db[name] = { plan: 1500, portions: { carbs: {max:6, current:0}, protein: {max:5, current:0}, fat: {max:3, current:0}, fruit: {max:3, current:0}, treat: {max:1, current:0} }, weights: [] };
+                const select = document.getElementById('userSelect');
+                const opt = document.createElement('option');
+                opt.value = name;
+                opt.innerText = name;
+                select.appendChild(opt);
+                select.value = name;
+                currentUser = name;
+                saveDB();
+                render();
+                Swal.fire({ icon: 'success', title: 'המשתתף נוסף בהצלחה!', timer: 1500, showConfirmButton: false });
+            } else if (name) {
+                Swal.fire('שגיאה', 'המשתתף כבר קיים במערכת.', 'error');
+            }
+        }
+
+        function setPlan(calories) {
+            db[currentUser].plan = calories;
+            if (calories === 1500) {
+                db[currentUser].portions.carbs.max = 6;
+                db[currentUser].portions.protein.max = 5;
+            } else {
+                db[currentUser].portions.carbs.max = 4;
+                db[currentUser].portions.protein.max = 4;
+            }
+            saveDB();
+            render();
+            Swal.fire({ icon: 'success', title: `המסלול עודכן ל-${calories} קלוריות`, timer: 1200, showConfirmButton: false });
+        }
+
+        function updatePortionSummary() {
+            const summary = document.getElementById('portionSummary');
+            const itemText = document.getElementById('itemName').value.trim();
+            const detected = detectFoodMeta(itemText) || selectedFood;
+            if (!detected) {
+                summary.textContent = 'כתוב שם מזון, והמערכת תזהה לבד את הקטגוריה, הכמות, והקלוריות.';
+                return;
+            }
+
+            const type = detected.category;
+            const current = db[currentUser].portions[type]?.current || 0;
+            const max = db[currentUser].portions[type]?.max || 0;
+            const amount = parseFloat(document.getElementById('itemCount').value) || 1;
+            const equivalent = (amount / detected.portionValue) * 1;
+            const totalCalories = amount * detected.calories;
+            const projected = current + equivalent;
+            const label = type === 'carbs' ? 'פחמימות' : type === 'protein' ? 'חלבונים' : type === 'fat' ? 'שומנים' : type === 'fruit' ? 'פירות' : 'פינוק';
+
+            if (!max) {
+                summary.textContent = `המערכת זיהתה: ${detected.name} (${detected.category}) | ${amount} ${detected.unit} = ${equivalent.toFixed(2)} מנות | כ-${totalCalories.toFixed(0)} קלוריות.`;
+                return;
+            }
+
+            if (current >= max || projected >= max) {
+                summary.textContent = `המערכת זיהתה: ${detected.name} (${detected.category}) | ${amount} ${detected.unit} = ${equivalent.toFixed(2)} מנות | כ-${totalCalories.toFixed(0)} קלוריות. מצב: הגבול הגיע! כבר הגעת ל-${max} ${label}.`;
+                return;
+            }
+
+            const remaining = Math.max(max - projected, 0);
+            summary.textContent = `המערכת זיהתה: ${detected.name} (${detected.category}) | ${amount} ${detected.unit} = ${equivalent.toFixed(2)} מנות | כ-${totalCalories.toFixed(0)} קלוריות. נותרו ${remaining.toFixed(2)} מנות לפני גבול ${max}.`;
+        }
+
+        function logFood() {
+            const itemName = document.getElementById('itemName').value.trim();
+            const count = parseFloat(document.getElementById('itemCount').value) || 1;
+            const detected = detectFoodMeta(itemName) || selectedFood;
+            if (!detected) {
+                Swal.fire('שגיאה', 'לא זוהה מאכל. הזן שם מזון תקין.', 'warning');
+                return;
+            }
+
+            const type = detected.category;
+            const portionState = db[currentUser].portions[type];
+            if (portionState) {
+                const portionValue = (count / detected.portionValue) * 1;
+                const limit = portionState.max;
+                const previous = portionState.current;
+                const nextValue = Math.min(previous + portionValue, limit);
+                const reachedLimit = previous < limit && nextValue >= limit;
+                const alreadyAtLimit = previous >= limit;
+
+                portionState.current = nextValue;
+                saveDB();
+                render();
+                document.getElementById('itemName').value = '';
+                selectedFood = null;
+                updatePortionSummary();
+
+                if (reachedLimit || alreadyAtLimit) {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'הגבול הגיע!',
+                        text: `הגעת למקסימום של ${limit} מנות בקטגוריה ${type === 'carbs' ? 'פחמימות' : type === 'protein' ? 'חלבונים' : type === 'fat' ? 'שומנים' : type === 'fruit' ? 'פירות' : 'פינוק'}.`,
+                        timer: 2200,
+                        showConfirmButton: false
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'נרשם בהצלחה!',
+                    text: `${detected.name} (${count} ${detected.unit}) = ${portionValue.toFixed(2)} מנות ${type} | כ-${(count * detected.calories).toFixed(0)} קלוריות`,
+                    timer: 1800,
+                    showConfirmButton: false
+                });
+            }
+        }
+
+        function logWeight() {
+            const w = parseFloat(document.getElementById('weightInput').value);
+            if (!isNaN(w)) {
+                db[currentUser].weights.push(w);
+                saveDB();
+                render();
+                document.getElementById('weightInput').value = '';
+                Swal.fire({ icon: 'success', title: 'השקילה נשמרה בהצלחה!', timer: 1500, showConfirmButton: false });
+            } else {
+                Swal.fire('שגיאה', 'נא להזין משקל תקין.', 'warning');
+            }
+        }
+
+        function calculateRecipe() {
+            const name = document.getElementById('recipeName').value.trim();
+            const cal = parseFloat(document.getElementById('recipeCalories').value);
+            const servings = parseInt(document.getElementById('recipeServings').value);
+
+            if (cal && servings > 0) {
+                const perServing = (cal / servings).toFixed(1);
+                document.getElementById('recipeResult').innerText = `✨ מתכון "${name || 'ללא שם'}": כל מנה/פרוסה מכילה כ-${perServing} קלוריות.`;
+            } else {
+                document.getElementById('recipeResult').innerText = "⚠️ נא להזין ערכים תקינים במחשבון.";
+            }
+        }
+
+        function render() {
+            const user = db[currentUser];
+
+            document.getElementById('btn1500').className = user.plan === 1500 ? "px-5 py-3 rounded-2xl font-bold bg-indigo-600 text-white transition flex-1 shadow-lg scale-105" : "px-5 py-3 rounded-2xl font-bold bg-white/80 text-slate-700 border-slate-200 hover:bg-white transition flex-1 shadow-sm";
+            document.getElementById('btn1200').className = user.plan === 1200 ? "px-5 py-3 rounded-2xl font-bold bg-indigo-600 text-white transition flex-1 shadow-lg scale-105" : "px-5 py-3 rounded-2xl font-bold bg-white/80 text-slate-700 border-slate-200 hover:bg-white transition flex-1 shadow-sm";
+
+            document.getElementById('planDetails').innerText = `📌 מסלול פעיל עבור ${currentUser}: ${user.plan} קלוריות. ירקות טריים ומבושלים ללא הגבלה בכל שעות היום.`;
+
+            const grid = document.getElementById('portionsGrid');
+            grid.innerHTML = '';
+            const labels = { carbs: 'פחמימות', protein: 'חלבונים', fat: 'שומנים', fruit: 'פירות', treat: 'פינוק' };
+            const icons = { carbs: '🍞', protein: '🍗', fat: '🥑', fruit: '🍎', treat: '🍫' };
+
+            for (let key in user.portions) {
+                const p = user.portions[key];
+                const card = document.createElement('div');
+                card.className = "bg-white/90 border border-indigo-100 p-4 rounded-2xl text-center shadow-md hover:shadow-lg transition";
+                card.innerHTML = `
+                    <div class="text-2xl mb-1">${icons[key]}</div>
+                    <div class="font-bold text-slate-700 text-sm">${labels[key]}</div>
+                    <div class="text-2xl font-extrabold text-indigo-600 my-1">${p.current} / ${p.max}</div>
+                    <div class="text-xs text-slate-400 font-medium">נוצלו / מקסימום</div>
+                `;
+                grid.appendChild(card);
+            }
+
+            const ctx = document.getElementById('weightChart').getContext('2d');
+            if (weightChartInstance) {
+                weightChartInstance.destroy();
+            }
+
+            weightChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: user.weights.map((_, i) => `שקילה ${i+1}`),
+                    datasets: [{
+                        label: 'מעקב משקל (ק״ג)',
+                        data: user.weights,
+                        borderColor: '#ec4899',
+                        backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: '#db2777',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(0,0,0,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('itemName').addEventListener('input', updatePortionSummary);
+        document.getElementById('itemCount').addEventListener('input', updatePortionSummary);
+        render();
+    </script>
+</body>
+</html>
