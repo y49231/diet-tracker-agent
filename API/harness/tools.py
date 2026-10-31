@@ -1,5 +1,5 @@
 import json
-from shared.tools import set_plan, log_food, check_recipe, log_weight
+from shared.tools import set_plan, log_food, check_recipe, log_weight, load_memory
 
 
 def dispatch_tool(name, command, **kwargs):
@@ -21,4 +21,6 @@ def dispatch_tool(name, command, **kwargs):
         )
     if command == "log_weight":
         return log_weight(name, float(kwargs.get("weight", 0.0)))
+    if command == "load_memory":
+        return load_memory(name)
     return {"error": True, "message": f"Unknown command: {command}"}

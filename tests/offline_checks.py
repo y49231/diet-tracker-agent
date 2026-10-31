@@ -1,6 +1,8 @@
-import json
 import os
 import sys
+import json
+import tempfile
+from pathlib import Path
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if ROOT not in sys.path:
@@ -8,6 +10,11 @@ if ROOT not in sys.path:
 
 from shared.data import load_data, save_data
 from shared.tools import set_plan, log_food, check_recipe, log_weight, detect_food_name, classify_food
+import shared.data as data_store
+from API.harness import history as api_history
+from API.harness import memory as api_memory
+from API.harness.loop import run_turn
+from SDK.agent import SDKDietAgent
 
 
 def reset_db():
@@ -59,13 +66,59 @@ def test_weight_history_added():
     print(f"PASS test_weight_history_added: {ok}")
     return ok
 
-
 def test_real_world_food_keyword_fallback():
     detected = detect_food_name("בוטנים")
     classified = classify_food("בוטנים", 1.0)
     ok = detected.get("category") == "fat" and classified.get("category") == "fat" and "בוטנים" in classified.get("message", "")
     print(f"PASS test_real_world_food_keyword_fallback: {ok}")
     return ok
+
+def test_scenario_routes_both_harnesses():
+    scenario_path = Path(ROOT) / "scenario.json"
+    scenario = json.loads(scenario_path.read_text(encoding="utf-8"))
+    original_data_path = data_store.DATA_FILE
+    original_history_dir = api_history.HISTORY_DIR
+    original_memory_path = api_memory.MEMORY_PATH
+
+    try:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_root = Path(temp_dir)
+            api_history.HISTORY_DIR = temp_root / "history"
+            api_memory.MEMORY_PATH = temp_root / "memory.json"
+
+            for harness_name in ("api", "sdk"):
+                data_store.DATA_FILE = str(temp_root / f"{harness_name}-database.json")
+                data_store.save_data({"participants": {}})
+                memory_state = {}
+                sdk_agent = SDKDietAgent(offline=True)
+
+                for session in scenario["sessions"]:
+                    for turn in session["turns"]:
+                        if harness_name == "api":
+                            result = run_turn(
+                                session["session_id"], session["user"],
+                                turn["input"], memory_state,
+                            )
+                            tool_name = result["tool_name"]
+                        else:
+                            result = sdk_agent.handle(
+                                session["session_id"], session["user"], turn["input"]
+                            )
+                            tool_name = result["tool_name"]
+                        assert tool_name == turn["expected_tools"][0], (harness_name, turn, result)
+
+                participant = data_store.load_data()["participants"]["Dana"]
+                assert participant["plan"] == 1500
+                assert participant["daily_portions"]["carbs"] == 1
+                assert participant["daily_portions"]["protein"] == 1
+                assert participant["weight_history"] == [68.2]
+    finally:
+        data_store.DATA_FILE = original_data_path
+        api_history.HISTORY_DIR = original_history_dir
+        api_memory.MEMORY_PATH = original_memory_path
+
+    print("PASS test_scenario_routes_both_harnesses: True")
+    return True
 
 
 def run_all():
@@ -76,6 +129,7 @@ def run_all():
         test_recipe_calc(),
         test_weight_history_added(),
         test_real_world_food_keyword_fallback(),
+        test_scenario_routes_both_harnesses(),
     ]
     return all(checks)
 

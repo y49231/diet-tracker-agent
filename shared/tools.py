@@ -274,3 +274,13 @@ def log_weight(name: str, weight: float) -> str:
     return (f"שקילה נרשמה עבור {name}: {weight} ק\"ג.\n"
             f"- שינוי מהשקילה הקודמת: {diff_from_prev:+.1f} ק\"ג.\n"
             f"- סך ירידה מצטברת: {total_drop:.1f} ק\"ג.")
+
+
+def load_memory(name: str) -> str:
+    participant = load_data().get("participants", {}).get(name)
+    if participant is None:
+        return f"לא נמצא מידע שמור עבור {name}."
+
+    portions = participant.get("daily_portions", {})
+    logged = ", ".join(f"{category}: {amount}" for category, amount in portions.items())
+    return f"התוכנית של {name}: {participant.get('plan', 1500)} קלוריות. מנות שנרשמו: {logged}."

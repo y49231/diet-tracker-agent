@@ -1,52 +1,28 @@
 # Diet Tracker Agent – Comparison Report
 
 ## Overview
-This project implements a diet-tracking agent with a raw API harness and a lightweight SDK-style variant. The domain logic is shared in the `shared` layer, while the harness behavior is separated into session memory, history, context assembly, tool dispatch, and token estimation.
+This project compares a direct Anthropic Messages API harness with a Claude Agent SDK harness. Both use the same local diet-tracking tools and shared model/effort settings.
 
-## Summary table
+## Scenario
 
-| Metric | API | SDK |
-|---|---:|---:|
-| Estimated input tokens | 220 | 240 |
-| Cache read tokens | 18 | 32 |
-| Cache write tokens | 26 | 40 |
-| Output tokens | 80 | 95 |
-| Model calls | 7 | 8 |
-| Total cost USD | 0.018 | 0.021 |
-| Validation pass rate | 5/5 | 5/5 |
+`scenario.json` contains seven turns across two sessions. The API runner and SDK runner default to live provider calls. Use `--offline` for local deterministic tests. Both runners accept a temporary database path through `--data`; the API runner also accepts isolated history and memory paths.
 
-## Core checks passed
-1. User plan selection accepts only 1200 or 1500.
-2. User-specific state is created and persisted in local JSON.
-3. Food logging updates the correct portion bucket.
-4. Recipe calorie estimate returns a valid per-serving value.
-5. Weight is appended to history and remains tied to the user.
+The saved results in `results/` currently have `mode: offline`; they validate routing and state only. They are not provider measurements and must not be used to compare token usage, latency, or cost.
 
-## Where SDK was heavier
-The SDK version tends to consume more tokens because the framework adds wrapper metadata, tool schema overhead, and more verbose context assembly between turns. This is especially visible in the cache read/write accounting and in repeated tool-calling context messages.
+## Validation
 
-## Where API was more controllable
-The raw API harness gives direct control over:
-- message passing format
-- history append behavior
-- memory persistence
-- context trimming
-- tool dispatch semantics
-- cost accounting details
+Run the local checks with `python tests/offline_checks.py`. The tests cover the shared domain functions and verify all seven expected tool selections and final state in both local harness paths without making provider calls.
 
-In the SDK version, some of that control is abstracted away by the framework, so the developer loses a few low-level decisions.
+Live token counts, provider cost, and latency are recorded by the runners when credentials are configured. Those values must be collected from a live run before making a measured comparison.
 
-## Recommendation
-For this specific diet-tracking agent, I would choose the API harness for production-like control and debugging, because it makes state management and error handling transparent. I would use the SDK version when speed of implementation and structured tool orchestration are more important than maximum control.
+## Comparison Notes
 
-## File coverage
-- `shared/data.py`: JSON persistence and base data model
-- `shared/tools.py`: diet domain logic and validation
-- `API/agent.py`: raw API agent wrapper
-- `API/harness/*`: runtime loop, memory, history, context, tools, compaction, cache, tokens
-- `SDK/tools.py`: SDK tool definitions
-- `SDK/main.py`: runner entry point
-- `SDK/agent.py`: agent wrapper
+- The API harness explicitly runs the Messages API tool-use round trip and records per-response usage.
+- The SDK harness uses a persistent `ClaudeSDKClient` per scenario session, an in-process MCP server for diet tools, and Claude Code's WebSearch tool.
+- Both are configured with the same model and effort values in `shared/agent_config.py`.
+- SDK live runs have a $1 max budget configured. API web search is limited to one search per request.
+- A live run has not been recorded: the local environment had no Anthropic API key, Claude Code OAuth token, or Claude CLI available during validation.
 
-## Validation note
-The shared logic was validated directly against the local database and passed for plan selection, meals, recipe check, and weight tracking.
+## Setup
+
+Install dependencies from `requirements.txt`, configure Anthropic API authentication and Claude Code authentication locally, then run each entry point with `scenario.json`. Results and their associated database/history files are isolated under `results/*_state/` by default. To run only deterministic local checks, use `--offline` or `python tests/offline_checks.py`. Never commit API keys or local credentials.

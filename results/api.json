@@ -1,5 +1,7 @@
 {
-  "scenario": "scenario.json",
+  "mode": "offline",
+  "model": null,
+  "effort": null,
   "results": [
     {
       "session_id": "session_1",
@@ -8,54 +10,90 @@
         {
           "turn_id": 1,
           "input": "אני רוצה תוכנית 1200 קלוריות.",
-          "response": "Tool executed successfully.",
+          "response": "התוכנית עבור Dana עודכנה בהצלחה ל-1200 קלוריות.",
+          "tool_names": [
+            "set_plan"
+          ],
+          "tool_calls": [],
           "usage": {
             "input": 5,
             "cache_read": 0,
-            "cache_write": 2,
-            "output": 1,
-            "total": 8
+            "cache_write": 0,
+            "output": 7,
+            "total": 12
           },
-          "stop_reason": "done"
+          "api_calls": 0,
+          "duration_ms": 0,
+          "model": null,
+          "effort": null,
+          "stop_reason": "tool_use",
+          "expected_tool": "set_plan"
         },
         {
           "turn_id": 2,
           "input": "רשום לי לחם כ-1 מנה carbs.",
-          "response": "Tool executed successfully.",
+          "response": "נרשם עבור Dana: לחם (1.0 יחידות). שווה ל-1.0 מנות carbs. הוערך ב-80.0 קלוריות. ניצול עד כה: 1.0/4. נותרו: 3.0 מנות.",
+          "tool_names": [
+            "log_food"
+          ],
+          "tool_calls": [],
           "usage": {
             "input": 6,
             "cache_read": 0,
-            "cache_write": 2,
-            "output": 1,
-            "total": 9
+            "cache_write": 0,
+            "output": 20,
+            "total": 26
           },
-          "stop_reason": "done"
+          "api_calls": 0,
+          "duration_ms": 0,
+          "model": null,
+          "effort": null,
+          "stop_reason": "tool_use",
+          "expected_tool": "log_food"
         },
         {
           "turn_id": 3,
           "input": "רשום לי עוף 1 מנה protein.",
-          "response": "Tool executed successfully.",
+          "response": "נרשם עבור Dana: עוף (1.0 יחידות). שווה ל-1.0 מנות protein. הוערך ב-180.0 קלוריות. ניצול עד כה: 1.0/4. נותרו: 3.0 מנות.",
+          "tool_names": [
+            "log_food"
+          ],
+          "tool_calls": [],
           "usage": {
             "input": 6,
             "cache_read": 0,
-            "cache_write": 2,
-            "output": 1,
-            "total": 9
+            "cache_write": 0,
+            "output": 20,
+            "total": 26
           },
-          "stop_reason": "done"
+          "api_calls": 0,
+          "duration_ms": 0,
+          "model": null,
+          "effort": null,
+          "stop_reason": "tool_use",
+          "expected_tool": "log_food"
         },
         {
           "turn_id": 4,
           "input": "תבדוק לי מתכון פשטידה של 600 קלוריות ל-2 מנות.",
           "response": "במתכון 'פשטידה' עבור 2 מנות/פרוסות:\n- כל פרוסה מכילה כ-300 קלוריות.\n- שווה ערך לכ-3.8 מנות בתפריט.",
+          "tool_names": [
+            "check_recipe"
+          ],
+          "tool_calls": [],
           "usage": {
             "input": 9,
             "cache_read": 0,
-            "cache_write": 2,
+            "cache_write": 0,
             "output": 17,
-            "total": 28
+            "total": 26
           },
-          "stop_reason": "tool_use"
+          "api_calls": 0,
+          "duration_ms": 0,
+          "model": null,
+          "effort": null,
+          "stop_reason": "tool_use",
+          "expected_tool": "check_recipe"
         }
       ]
     },
@@ -66,41 +104,68 @@
         {
           "turn_id": 5,
           "input": "מהי התוכנית שלי עכשיו ומה כבר רשם לי היום?",
-          "response": "Tool executed successfully.",
+          "response": "התוכנית של Dana: 1200 קלוריות. מנות שנרשמו: carbs: 1.0, protein: 1.0, fat: 0, fruit: 0, treat: 0.",
+          "tool_names": [
+            "load_memory"
+          ],
+          "tool_calls": [],
           "usage": {
             "input": 9,
             "cache_read": 0,
-            "cache_write": 2,
-            "output": 1,
-            "total": 12
+            "cache_write": 0,
+            "output": 17,
+            "total": 26
           },
-          "stop_reason": "done"
+          "api_calls": 0,
+          "duration_ms": 0,
+          "model": null,
+          "effort": null,
+          "stop_reason": "tool_use",
+          "expected_tool": "load_memory"
         },
         {
           "turn_id": 6,
           "input": "רשום לי משקל 68.2 קילוגרם.",
-          "response": "שקילה ראשונה נרשמה עבור Dana: 70.0 ק\"ג.",
+          "response": "שקילה ראשונה נרשמה עבור Dana: 68.2 ק\"ג.",
+          "tool_names": [
+            "log_weight"
+          ],
+          "tool_calls": [],
           "usage": {
             "input": 5,
             "cache_read": 0,
-            "cache_write": 2,
+            "cache_write": 0,
             "output": 7,
-            "total": 14
+            "total": 12
           },
-          "stop_reason": "tool_use"
+          "api_calls": 0,
+          "duration_ms": 0,
+          "model": null,
+          "effort": null,
+          "stop_reason": "tool_use",
+          "expected_tool": "log_weight"
         },
         {
           "turn_id": 7,
           "input": "שנה לי את התוכנית ל-1500 קלוריות.",
-          "response": "Tool executed successfully.",
+          "response": "התוכנית עבור Dana עודכנה בהצלחה ל-1500 קלוריות.",
+          "tool_names": [
+            "set_plan"
+          ],
+          "tool_calls": [],
           "usage": {
             "input": 6,
             "cache_read": 0,
-            "cache_write": 2,
-            "output": 1,
-            "total": 9
+            "cache_write": 0,
+            "output": 7,
+            "total": 13
           },
-          "stop_reason": "done"
+          "api_calls": 0,
+          "duration_ms": 0,
+          "model": null,
+          "effort": null,
+          "stop_reason": "tool_use",
+          "expected_tool": "set_plan"
         }
       ]
     }
@@ -110,14 +175,14 @@
       "Dana": {
         "plan": 1500,
         "daily_portions": {
-          "carbs": 0,
-          "protein": 0,
+          "carbs": 1.0,
+          "protein": 1.0,
           "fat": 0,
           "fruit": 0,
           "treat": 0
         },
         "weight_history": [
-          70.0
+          68.2
         ]
       }
     }
